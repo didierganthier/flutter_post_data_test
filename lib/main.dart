@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutterpostdatatest/models/Album.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -9,8 +10,8 @@ void main() {
 
 class MyApp extends StatelessWidget{
 
-  Future <http.Response> createAlbum(String title){
-    return http.post(
+  Future <Album> createAlbum(String title) async{
+    final http.Response response = await http.post(
       'https://jsonplaceholder.typicode.com/albums',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8'
@@ -19,6 +20,17 @@ class MyApp extends StatelessWidget{
         'title': title
       })
     );
+
+    if(response.statusCode == 201){
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      return Album.fromJson(json.decode(response.body));
+    }
+    else{
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
   }
 
   @override
