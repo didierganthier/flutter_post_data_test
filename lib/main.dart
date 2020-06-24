@@ -8,7 +8,14 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatefulWidget{
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  TextEditingController _controller = TextEditingController();
+  Future<Album> _futureAlbum;
 
   Future <Album> createAlbum(String title) async{
     final http.Response response = await http.post(
@@ -40,7 +47,26 @@ class MyApp extends StatelessWidget{
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Text("Hello"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(hintText: 'Enter title'),
+                ),
+              ),
+              RaisedButton(
+                child: Text('Create Data'),
+                onPressed: (){
+                  setState(() {
+                    _futureAlbum = createAlbum(_controller.text);
+                  });
+                },
+              )
+            ],
+          )
         ),
       ),
     );
