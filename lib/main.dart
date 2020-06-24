@@ -47,7 +47,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Column(
+          child: (_futureAlbum == null)
+              ?  Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
@@ -66,6 +67,18 @@ class _MyAppState extends State<MyApp> {
                 },
               )
             ],
+          ) :
+          FutureBuilder<Album>(
+            future: _futureAlbum,
+            builder: (context, snapshot){
+              if(snapshot.hasData){
+                return Text(snapshot.data.title);
+              } else if(!snapshot.hasData){
+                return Text("${snapshot.error}");
+              }
+
+              return CircularProgressIndicator();
+            },
           )
         ),
       ),
